@@ -2,10 +2,26 @@
 
 import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 
 export default function ProductCard({ product, index = 0 }) {
   const { addToCart } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const handleAddToCart = () => {
+    setIsAdding(true);
+    addToCart(product);
+    
+    setTimeout(() => {
+      setIsAdding(false);
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 2000);
+    }, 600);
+  };
 
   return (
     <motion.div
@@ -35,12 +51,83 @@ export default function ProductCard({ product, index = 0 }) {
         <div className="flex justify-between items-center">
           <span className="text-2xl font-bold text-orange-600">₹{product.price}</span>
           <motion.button
-            onClick={() => addToCart(product)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition text-sm font-medium"
+            onClick={handleAddToCart}
+            whileHover={!isAdding && !showSuccess ? { scale: 1.05 } : {}}
+            whileTap={!isAdding && !showSuccess ? { scale: 0.95 } : {}}
+            animate={
+              isAdding
+                ? { scale: [1, 0.9, 1], rotate: [0, -5, 5, -5, 0] }
+                : showSuccess
+                ? { scale: 1 }
+                : { scale: 1 }
+            }
+            transition={{ duration: 0.6 }}
+            className="relative bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition text-sm font-medium overflow-hidden min-w-[100px]"
+            disabled={isAdding || showSuccess}
           >
-            Add to Cart
+            <AnimatePresence mode="wait">
+              {isAdding ? (
+                <motion.span
+                  key="adding"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="flex items-center gap-2"
+                >
+                  <motion.svg
+                    className="w-4 h-4"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 0.6, repeat: Infinity, ease: "linear" }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    />
+                  </motion.svg>
+                  Adding...
+                </motion.span>
+              ) : showSuccess ? (
+                <motion.span
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.5 }}
+                  className="flex items-center gap-2"
+                >
+                  <motion.svg
+                    initial={{ scale: 0, pathLength: 0 }}
+                    animate={{ scale: 1, pathLength: 1 }}
+                    transition={{ duration: 0.4, delay: 0.1 }}
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <motion.path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={3}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </motion.svg>
+                  Added!
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="default"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  Add to Cart
+                </motion.span>
+              )}
+            </AnimatePresence>
           </motion.button>
         </div>
       </div>
