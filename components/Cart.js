@@ -4,6 +4,7 @@ import { useCart } from '@/context/CartContext';
 import CartItem from './CartItem';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Cart({ isOpen, onClose }) {
   const { cart, getTotalPrice, getTotalItems } = useCart();
@@ -36,29 +37,36 @@ export default function Cart({ isOpen, onClose }) {
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
-
   return (
-    <>
-      {/* Backdrop with Image */}
-      <div
-        className="fixed inset-0 z-40 transition-opacity"
-        onClick={onClose}
-      >
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop with Image */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 transition-opacity"
+            onClick={onClose}
+          >
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: "url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1920&h=1080&fit=crop&q=80')"
           }}
         ></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-black/20"></div>
-      </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-black/20"></div>
+          </motion.div>
 
-      {/* Cart Sidebar */}
-      <div 
-        className="fixed right-0 top-0 h-full w-full sm:w-96 sm:max-w-md bg-white shadow-xl z-50 flex flex-col overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
+          {/* Cart Sidebar */}
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed right-0 top-0 h-full w-full sm:w-96 sm:max-w-md bg-white shadow-xl z-50 flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
         <div className="flex justify-between items-center p-4 border-b bg-white">
           <h2 className="text-2xl font-bold text-gray-800">Shopping Cart</h2>
           <button
@@ -121,10 +129,12 @@ export default function Cart({ isOpen, onClose }) {
             >
               Proceed to Checkout
             </Link>
-          </div>
-        )}
-      </div>
-    </>
+            </div>
+          )}
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
 

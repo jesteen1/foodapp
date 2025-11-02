@@ -7,6 +7,8 @@ import AddressForm from '@/components/AddressForm';
 import BillSummary from '@/components/BillSummary';
 import PaymentForm from '@/components/PaymentForm';
 import DeliveryInfo from '@/components/DeliveryInfo';
+import { motion, AnimatePresence } from 'framer-motion';
+import AnimatedSection from '@/components/AnimatedSection';
 
 export default function CheckoutPage() {
   const { cart } = useCart();
@@ -99,30 +101,51 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Checkout</h1>
+        <AnimatedSection>
+          <h1 className="text-3xl font-bold text-gray-800 mb-8">Checkout</h1>
+        </AnimatedSection>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {step === 'address' && (
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <AddressForm onAddressSubmit={handleAddressSubmit} />
-              </div>
-            )}
+            <AnimatePresence mode="wait">
+              {step === 'address' && (
+                <motion.div
+                  key="address"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-white p-6 rounded-lg shadow-md"
+                >
+                  <AddressForm onAddressSubmit={handleAddressSubmit} />
+                </motion.div>
+              )}
 
-            {step === 'payment' && (
-              <>
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                  <PaymentForm address={address} onPaymentSuccess={handlePaymentSuccess} />
-                </div>
-                <DeliveryInfo address={address} />
-              </>
-            )}
+              {step === 'payment' && (
+                <motion.div
+                  key="payment"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+                    <PaymentForm address={address} onPaymentSuccess={handlePaymentSuccess} />
+                  </div>
+                  <AnimatedSection>
+                    <DeliveryInfo address={address} />
+                  </AnimatedSection>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-white p-6 rounded-lg shadow-md sticky top-24">
-              <BillSummary />
-            </div>
+            <AnimatedSection delay={0.2}>
+              <div className="bg-white p-6 rounded-lg shadow-md sticky top-24">
+                <BillSummary />
+              </div>
+            </AnimatedSection>
           </div>
         </div>
       </div>

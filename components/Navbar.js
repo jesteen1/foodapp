@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar({ onCartClick }) {
   const { getTotalItems } = useCart();
@@ -30,8 +31,10 @@ export default function Navbar({ onCartClick }) {
             <Link href="/products" className="text-gray-700 hover:text-orange-600 transition">
               Products
             </Link>
-            <button
+            <motion.button
               onClick={onCartClick}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="relative bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition flex items-center gap-2"
             >
               <svg
@@ -48,12 +51,19 @@ export default function Navbar({ onCartClick }) {
                 />
               </svg>
               Cart
-              {mounted && getTotalItems() > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {getTotalItems()}
-                </span>
-              )}
-            </button>
+              <AnimatePresence>
+                {mounted && getTotalItems() > 0 && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                  >
+                    {getTotalItems()}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.button>
           </div>
 
           {/* Mobile Menu Button */}

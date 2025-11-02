@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { products } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
+import { motion } from 'framer-motion';
+import AnimatedSection from '@/components/AnimatedSection';
 
 export default function Home() {
   const featuredProducts = products.slice(0, 6);
@@ -10,29 +12,48 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-orange-600 to-orange-700 text-white py-20">
+      <section className="bg-gradient-to-r from-orange-600 to-orange-700 text-white py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <motion.h1
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-4xl md:text-5xl font-bold mb-4"
+            >
               Welcome to FoodStore
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-orange-100">
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-xl md:text-2xl mb-8 text-orange-100"
+            >
               Premium Homemade Food Products - Fresh, Delicious, Delivered
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/products"
-                className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
-              >
-                Shop Now
-              </Link>
-              <Link
-                href="/products"
-                className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition"
-              >
-                Browse Products
-              </Link>
-            </div>
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/products"
+                  className="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition inline-block"
+                >
+                  Shop Now
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/products"
+                  className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition inline-block"
+                >
+                  Browse Products
+                </Link>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -40,23 +61,25 @@ export default function Home() {
       {/* Featured Products */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <AnimatedSection className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">Featured Products</h2>
             <p className="text-gray-600">Handpicked favorites from our collection</p>
-          </div>
+          </AnimatedSection>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {featuredProducts.map((product, index) => (
+              <ProductCard key={product.id} product={product} index={index} />
             ))}
           </div>
-          <div className="text-center mt-12">
-            <Link
-              href="/products"
-              className="inline-block bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-700 transition"
-            >
-              View All Products
-            </Link>
-          </div>
+          <AnimatedSection delay={0.3} className="text-center mt-12">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                href="/products"
+                className="inline-block bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-700 transition"
+              >
+                View All Products
+              </Link>
+            </motion.div>
+          </AnimatedSection>
         </div>
       </section>
 
@@ -64,7 +87,7 @@ export default function Home() {
       <section className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
+            <AnimatedSection delay={0} className="text-center">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
                   className="w-8 h-8 text-orange-600"
@@ -82,8 +105,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Fresh Products</h3>
               <p className="text-gray-600">Made fresh daily with quality ingredients</p>
-            </div>
-            <div className="text-center">
+            </AnimatedSection>
+            <AnimatedSection delay={0.2} className="text-center">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
                   className="w-8 h-8 text-orange-600"
@@ -101,8 +124,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
               <p className="text-gray-600">Quick and reliable delivery to your doorstep</p>
-            </div>
-            <div className="text-center">
+            </AnimatedSection>
+            <AnimatedSection delay={0.4} className="text-center">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
                   className="w-8 h-8 text-orange-600"
@@ -120,7 +143,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Secure Payment</h3>
               <p className="text-gray-600">Safe and encrypted payment processing</p>
-            </div>
+            </AnimatedSection>
           </div>
         </div>
       </section>

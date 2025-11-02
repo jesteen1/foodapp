@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
+import { motion } from 'framer-motion';
 
 export default function PaymentForm({ address, onPaymentSuccess }) {
   const { getTotalPrice, clearCart } = useCart();
@@ -110,13 +111,15 @@ export default function PaymentForm({ address, onPaymentSuccess }) {
         </div>
       </div>
 
-      <button
+      <motion.button
         type="submit"
         disabled={processing}
+        whileHover={!processing ? { scale: 1.02 } : {}}
+        whileTap={!processing ? { scale: 0.98 } : {}}
         className="w-full bg-orange-600 text-white py-3 rounded-lg hover:bg-orange-700 transition font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
       >
         {processing ? 'Processing...' : `Pay ₹${total.toFixed(2)}`}
-      </button>
+      </motion.button>
 
       <p className="text-xs text-gray-500 text-center">
         Your payment is secured and encrypted

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 export default function AddressForm({ onAddressSubmit }) {
   const [formData, setFormData] = useState({
@@ -138,12 +139,14 @@ export default function AddressForm({ onAddressSubmit }) {
         </div>
       </div>
 
-      <button
+      <motion.button
         type="submit"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         className="w-full bg-orange-600 text-white py-3 rounded-lg hover:bg-orange-700 transition font-medium"
       >
         Continue to Payment
-      </button>
+      </motion.button>
     </form>
   );
 }
